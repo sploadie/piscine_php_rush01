@@ -22,18 +22,21 @@ abstract class Battleship implements ArrayAccess {
 	private $_hull;
 	private $_player = NULL;
 
-	public function __construct($name, $coordinates, Arena $arena) {
+	public function __construct($name, $coordinates, Arena $arena, $flipped) {
 		$this->_arena = $arena;
 		$this->_name = (string) $name;
 		$this->_hull = (int) $this->_default()['hull'];
 		$this->resetData();
 		if (count($coordinates) != 2 || !is_int($coordinates['x']) || !is_int($coordinates['y']))
 				trigger_error ( "Incorrect Coordinates", E_USER_ERROR );
+		if (!is_bool($flipped))
+				trigger_error ( "\$flipped should be a boolean", E_USER_ERROR );
 		$this->_coordinates['x'] = $coordinates['x'];
 		$this->_coordinates['y'] = $coordinates['y'];
 		$this->_coordinates['width']  = (int) $this->_default()['width'];
 		$this->_coordinates['height'] = (int) $this->_default()['height'];
-		echo "Battleship __constructed." . PHP_EOL;
+		$this->_coordinates['flipped'] = $flipped;
+		// echo "Battleship __constructed." . PHP_EOL;
 	}
 
 	public function getData($key) {
@@ -64,11 +67,11 @@ abstract class Battleship implements ArrayAccess {
 		$this->_arena->removeShip($this);
 		if (!is_null($this->_player))
 			$this->_player->shipDestroyed($this);
-		echo get_class($this) . " " . $this->_name . " was destroyed." . PHP_EOL;
+		// echo get_class($this) . " " . $this->_name . " was destroyed." . PHP_EOL;
 	}
 
 	public function __destruct() {
-		echo get_class($this) . " " . $this->_name . " was __destructed." . PHP_EOL;
+		// echo get_class($this) . " " . $this->_name . " was __destructed." . PHP_EOL;
 	}
 
 	// ARRAY ACCESS ==================================>
@@ -92,7 +95,7 @@ abstract class Battleship implements ArrayAccess {
 	}
 
 	public function offsetGet($offset) {
-		return isset($this->_coordinates[$offset]) ? $this->_coordinates[$offset] : trigger_error ( get_class($this) . "'s coordinates only have x, y, width, and height keys.", E_USER_ERROR );;
+		return isset($this->_coordinates[$offset]) ? $this->_coordinates[$offset] : trigger_error ( get_class($this) . "'s coordinates only have x, y, width, and height keys.", E_USER_ERROR );
 	}
 	// <================================== ARRAY ACCESS
 }
