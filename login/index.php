@@ -12,7 +12,7 @@ switch ($_GET["action"]) {
 	case "login":
 		//If the user is logged in but gets here, get him out
 		if ($_SESSION['current_user'] !== "")
-			return_to('Already logged in!');
+			exit_to("/?tab=3", (isset($_GET['message']) ? $_GET['message'] : 'Already logged in!'));
 		$title = "Login";
 		$form = <<<EOT
 <form method="post" action="login.php">

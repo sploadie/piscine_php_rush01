@@ -1,5 +1,7 @@
 <?php
 require_once("../php_assets/exit_to.php");
+require_once("../php_assets/return_to.php");
+set_return_to("/?tab=3");
 if ($_POST['submit'] === "Update" &&
 	isset($_POST['login'])    &&
 	$_POST['login']  !== "")
@@ -19,8 +21,8 @@ if ($_POST['submit'] === "Update" &&
 	}
 	$passwd_file = serialize($passwd_database);
 	file_put_contents("../private/passwd", $passwd_file);
-	exit_to("/?tab=3", "OK");
+	exit_to("/?tab=3", 'User ' . $_POST['login'] . ' updated.');
 }
 else
-	exit_to("/?tab=3", "ERROR");
+	exit_to("/?tab=3", "Invalid login.");
 ?>
