@@ -1,0 +1,103 @@
+body {
+  padding: 20px 50px 150px;
+  font-size: 13px;
+  text-align: center;
+  background: rgb(253, 253, 253);
+}
+
+ul {
+  text-align: center;
+  display: inline;
+  margin: 0px;
+  padding: 15px 4px 17px 0;
+  list-style: none;
+}
+ul li {
+  display: inline-block;
+  margin-right: -4px;
+  position: relative;
+  padding: 15px 20px;
+  background-color: rgb(253, 253, 253);
+  border: 1px solid black;
+}
+ul li:hover {
+  background: #555;
+  color: #fff;
+}
+
+#topbox {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1280px;
+    margin-top: 18px;
+    margin-bottom: 50px;
+}
+
+#products_display {
+    margin-left: auto;
+    margin-right: auto;
+    display: inline-block;
+    max-width: 1280px;
+    margin-top: 18px;
+}
+
+.food_item {
+    background: rgb(253, 253, 253);
+    height: 250px;
+    width: 250px;
+    border: 3px solid #ddd;
+    margin-right: 20px;
+    margin-bottom: 20px;
+    display: inline-block;
+    border-radius: 5px;
+}
+
+.food_item .food_image {
+  max-width: 230px;
+  max-height: 100px;
+  width: 230px;
+  height: 100px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-bottom: 15px;
+}
+
+.food_item .food_image img {
+  max-width: 100%;
+  max-height: 100%;
+  display: block;
+  margin: auto;
+  border-radius: 10px;
+}
+
+.food_item #submit_button {
+  float:right;
+  margin-right:8px;
+  margin-top:-2px;
+}
+
+.food_item .food_info {
+  max-height: 80px;
+  height: 80px;
+  max-width: 200px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.food_item .food_info strong {
+  font-size: 16px;
+  text-align: center;
+}
+
+.food_item .food_info p {
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+#price {
+  text-align:left; 
+  margin-left:8px;
+}
+
