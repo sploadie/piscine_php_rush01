@@ -9,7 +9,7 @@ function urlHome() {
 	);
 }
 
-# where you currently are
+# where you currently are (don't really use this one)
 function urlCurrent() {
 	return sprintf(
 		"%s://%s:8080/%s",

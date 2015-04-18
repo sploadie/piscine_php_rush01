@@ -1,5 +1,6 @@
 <?php
-require_once('url.php');
+
+require_once("../url.php");
 
 final class Arena {
 	private $_width  = 150;
@@ -60,10 +61,6 @@ final class Arena {
 		}
 	}
 
-	public function getWidth()		{ return $this->_width;		}
-	public function getHeight()		{ return $this->_height;	}
-	public function getTileSize()	{ return $this->_tile_size;	}
-
 	public function toHTML() {
 		$div_size = $this->_tile_size - 1;
 		echo '<table id="tiles" style="left: 0px; top: 0px; position: absolute; margin: 0px; padding: 0px; border-collapse: collapse;">' . PHP_EOL;
@@ -94,10 +91,14 @@ EOT;
 			$img_url = urlPath('img/' . $ship->getDefault('sprite'));
 			$transform = ($ship['flipped'] ? "transform:scale(-1,1);" : "");
 			echo <<<EOT
-	<img class="battleship" src="$img_url" width="$img_width" height="$img_height" style="width: $img_width; height: $img_height; left: $img_x_pos; top: $img_y_pos; position: absolute; $transform"></img>
+			<img class="battleship" src="$img_url" width="$img_width" height="$img_height" style="width: $img_width; height: $img_height; left: $img_x_pos; top: $img_y_pos; position: absolute; $transform" />
 EOT;
 		}
 	}
+
+	public function getWidth()		{ return $this->_width;		}
+	public function getHeight()		{ return $this->_height;	}
+	public function getTileSize()	{ return $this->_tile_size;	}
 }
 
 ?>
