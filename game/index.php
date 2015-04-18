@@ -2,14 +2,16 @@
 
 session_start();
 
-require_once('Game.class.php');
+require_once('classIncludes.php');
 require_once('../url.php');
 
-if (isset($_SESSION['game'])) {
-	$game = new Game();
-	$game();
+/*if (!isset($_SESSION['game'])) {
+*/	$game = new Game( array ( 'tfleming' => array ( new Scout(1, 1), new Scout(1, 3) )
+							, 'sploadie' => array ( new Scout(146, 98), new Scout(146, 96) ) ) );
 	$_SESSION['game'] = $game;
-}
+	error_log('setting up a new game');
+/*}
+*/
 
 ?>
 
@@ -31,7 +33,7 @@ if (isset($_SESSION['game'])) {
 		<div id="overlay-thingy" class="ui-widget-shadow ui-corner-all"></div>
 	</div>
 	<div id="gui" class="ui-widget ui-widget-content ui-corner-all">
-		<?php $_SESSION['game']->uiHTML(); ?>
+		<?php $_SESSION['game']->controlUiToHTML(); ?>
 	</div>
 </body>
 </html>
