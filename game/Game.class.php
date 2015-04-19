@@ -113,7 +113,8 @@ class Game {
 
 		$ship = $this->getSelectedShip($currentUsername);
 		if ( $ship['ammo'] > 0 ) {
-			$bulletPosition = array ( 'x' => 0, 'y' => 0 ); # need to set this
+			$bulletPosition = array ( 'x' => $ship['x'] + intval($ship['width'] / 2)
+									, 'y' => $ship['y'] + intval($ship['height'] / 2) );
 			$thingHit = false;
 			while ( $thingHit === false && $this->isInBounds( $bulletPosition ) ) {
 				$possibility = $this->doCoordinatesIntersectShip( array($bulletPosition)
@@ -121,18 +122,15 @@ class Game {
 				if ( $possibility !== false ) {
 					$thingHit = $possibility;
 				} else {
-					error_log('bullet position: ' . $bulletPosition['x'] . ' ' . $bulletPosition['y']);
 					$bulletPosition['x'] += $deltaX;
 					$bulletPosition['y'] += $deltaY;
 				}
 			}
 			if ($thingHit === false) {
-				error_log('hit nothing');
 			} else {
-				error_log('hit something!!!!!');
 				if ( $thingHit['ship']['shield'] > 0 ) {
 					$thingHit['ship']->changeShield(-$ship['damage']);
-					if ( $thingHit['shield'] < 0 ) {
+					if ( $thingHit['ship']['shield'] < 0 ) {
 						$thingHit['ship']->changeHealth( $thingHit['shield'] );
 					}
 				} else {
@@ -151,11 +149,19 @@ class Game {
 
 	# assumes there is at least one player
 	public function nextPlayer() {
+
+		function resetShips($ships) {
+			foreach ($ships as $ship) {
+				$ship->resetBeforeMove();
+			}
+		}
+
 		$this->_currentPlayer++;
 		if ( $this->_currentPlayer > count($this->_players) - 1 )
 			$this->_currentPlayer = 0;
 		$this->_selectedShipId = -1;
 		$this->_phase = 0;
+		resetShips($this->_ships[$this->getCurrentPlayer()]);
 		error_log('changing players... new player: ' . $this->getCurrentPlayer());
 	}
 
