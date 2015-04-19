@@ -81,7 +81,7 @@ function login_link($action, $tooltip, $icon) {
 		<li><a href="#profile">Profile</a></li>
 		<?php if ($_SESSION['admin']) { echo '<li><a href="#admin">Admin</a></li>';} ?>
 	</ul>
-	<div id="lobby">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</div>
+	<div id="lobby"><?php include('lobby/lobby.php'); ?></div>
 	<div id="ranking">Phasellus mattis tincidunt nibh. Cras orci urna, blandit id, pretium vel, aliquet ornare, felis. Maecenas scelerisque sem non nisl. Fusce sed lorem in enim dictum bibendum.</div>
 	<div id="profile"><?php include('user/user.php'); ?></div>
 	<?php if ($_SESSION['admin']) { echo '<div id="admin">'; include('admin/admin.php'); echo '</div>';} ?>

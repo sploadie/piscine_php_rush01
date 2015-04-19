@@ -23,11 +23,13 @@ $current_user = $_SESSION['current_user'];
 	}
 </style>
 <div id="admin_div">
+	<?php if (isset($_GET['message']))  { ?>
 	<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
 		<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
 		<strong>Alert:</strong> <?php echo urldecode($_GET['message']); ?>
 		<span class="ui-icon ui-icon-alert" style="float: right; margin-left: .3em;"></span></p>
 	</div>
+	<?php } ?>
 	<h1>Admin Page [<?php echo $current_user; ?>]</h1>
 	<h2>Users:</h2>
 	<ul>
