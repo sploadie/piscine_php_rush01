@@ -5,8 +5,6 @@ require_once("../url.php");
 
 final class Arena {
 
-	private static $uniqueId;
-
 	private $_width;
 	private $_height;
 	private $_tileSize;
@@ -15,7 +13,6 @@ final class Arena {
 		$this->_width = 150;
 		$this->_height = 100;
 		$this->_tileSize = 10;
-		$this->uniqueId = 0;
 	}
 
 	public function toHTML() {
