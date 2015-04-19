@@ -5,7 +5,6 @@ if (file_exists("private/chat")) { $chat_archive = unserialize(file_get_contents
 else { $chat_archive = array(); }
 $current_user = $_SESSION['current_user'];
 ?>
-<link rel="stylesheet" type="text/css" href="lobby.css">
 <style type="text/css">
 	#lobby_div {
 	}
@@ -34,34 +33,34 @@ $current_user = $_SESSION['current_user'];
 function sendMessage() {
 	$.ajax({
         type: 'POST',
-        url: 'lobby/speak.php',
+        url: 'chat/speak.php',
         data: $('#speak').serialize(), 
         success: function(msg) {
         	$('#speak_text').val("");
         	if (msg !== "") {
         		alert(msg);
         	};
-        	$('#chat').load('lobby/chat.php');
+        	$('#chat').load('chat/chat.php');
         }
     });
 }
 function updateChat() {
 	$.ajax({
         type: 'POST',
-        url: 'lobby/check_chat.php',
-        success: function(msg) { if (msg === "update") { $('#chat').load('lobby/chat.php'); }; }
+        url: 'chat/check_chat.php',
+        success: function(msg) { if (msg === "update") { $('#chat').load('chat/chat.php'); }; }
     });
 }
 $(document).ready(function() {
 	$(function() {
-		$('#chat').load('lobby/chat.php');
+		$('#game_list').load('lobby/game_list.php');
+		$('#chat').load('chat/chat.php');
 	});
-	setInterval("updateChat()", 1000);
+	setInterval("updateChat()", 5000);
 });
 </script>
 <div id="lobby_div">
-	<div id="games_list" class="lobby_section ui-widget ui-widget-content ui-corner-all">
-		<h1>Games</h1>
+	<div id="game_list" class="lobby_section ui-widget ui-widget-content ui-corner-all">
 	</div>
 	<div id="global_chat" class="lobby_section ui-widget ui-widget-content ui-corner-all">
 		<h1>Global Chat</h1>

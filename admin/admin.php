@@ -7,7 +7,6 @@ if (file_exists("private/passwd")) { $passwd_database = unserialize(file_get_con
 else { $passwd_database = array(); }
 $current_user = $_SESSION['current_user'];
 ?>
-<link rel="stylesheet" type="text/css" href="admin.css">
 <style type="text/css">
 	#admin_div li {
 		line-height: 30px;

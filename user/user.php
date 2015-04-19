@@ -4,7 +4,6 @@ require_once('url.php');
 @session_start();
 $current_user = $_SESSION['current_user'];
 ?>
-<link rel="stylesheet" type="text/css" href="lobby.css">
 <style type="text/css">
 	#user_div {
 	}
