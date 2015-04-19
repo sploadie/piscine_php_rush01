@@ -13,6 +13,7 @@ class Scout extends Battleship {
 									, 'defaultShield' => 2
 									, 'damage' => 1
 									, 'defaultAmmo' => 10
+									, 'defaultPower' => 5
 									, 'sprite' => 'battleship.jpg' ) );
 	}
 /*		'hull'		=> 4,

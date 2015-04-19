@@ -13,6 +13,7 @@ class Obstacle extends Battleship {
 									, 'defaultShield' => 2
 									, 'damage' => 1
 									, 'defaultAmmo' => 10
+									, 'defaultPower' => 5
 									, 'sprite' => 'obstacle.gif' ) );
 	}
 }

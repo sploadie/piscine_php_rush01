@@ -16,6 +16,7 @@ abstract class Battleship implements ArrayAccess {
 			&& isset($kwargs['defaultShield'])
 			&& isset($kwargs['damage'])
 			&& isset($kwargs['defaultAmmo'])
+			&& isset($kwargs['defaultPower'])
 			&& isset($kwargs['sprite']) ) {
 			$this->data = $kwargs;
 
@@ -27,18 +28,11 @@ abstract class Battleship implements ArrayAccess {
 		}
 	}
 
-	public function isDead() {
-		return ($this->data['health'] > 0);
-	}
-
-	public function setHealth($deltaHealth) {
-		$this->data['health'] += $deltaHealth;
-	}
-
 	public function resetBeforeMove() {
 		$this->data['speed'] = $this->data['defaultSpeed'];
 		$this->data['shield'] = $this->data['defaultShield'];
 		$this->data['ammo'] = $this->data['defaultAmmo'];
+		$this->data['power'] = $this->data['defaultPower'];
 	}
 
 	public function move($deltaX, $deltaY) {
@@ -71,6 +65,30 @@ abstract class Battleship implements ArrayAccess {
 		}
 		$this->changeShipCoordinates();
 		return $this['coordinates'];
+	}
+
+	public function isDead() {
+		return ($this->data['health'] > 0);
+	}
+
+	public function changeHealth($deltaHealth) {
+		$this->data['health'] += $deltaHealth;
+	}
+
+	public function changePower($deltaPower) {
+		$this->data['power'] += $deltaPower;
+	}
+
+	public function changeShield($deltaPower) {
+		$this->data['shield'] += $deltaPower;
+	}
+
+	public function changeSpeed($deltaSpeed) {
+		$this->data['speed'] += $deltaSpeed;
+	}
+
+	public function changeAmmo($deltaAmmo) {
+		$this->data['ammo'] += $deltaAmmo;
 	}
 
 	// ARRAY ACCESS ==================================>

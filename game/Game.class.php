@@ -10,6 +10,7 @@ class Game {
 	private $_selectedShipId;	# currently selected ship
 	private $_ships;			# $this->_ships['tfleming'] ==> ships belonging to tfleming
 	private $_colors;			# color strings associated with each player
+	private $_phase;			# 0 = order; 1 = move; 2 = fire
 
 	public function __construct( array $kwargs ) {
 		$this->_arena = new Arena();
@@ -87,16 +88,26 @@ class Game {
 
 		if ( isset( $this->_ships[$currentUsername][$this->_selectedShipId] ) ) {
 			$ship = $this->_ships[$currentUsername][$this->_selectedShipId];
-			$ship->move($deltaX, $deltaY);
-			if ( didCollisionOccur($ship, $this->_ships, $this->_selectedShipId
-									, $currentUsername)
-					|| !isInBounds($ship, $this->_arena) ) {
-				$this->killShip($currentUsername);
-				error_log('The ship that moved ran into something. How sad.');
-			}
+			if ( $ship['speed'] > 0) {
+				$ship->move($deltaX, $deltaY);
+				if ( didCollisionOccur($ship, $this->_ships, $this->_selectedShipId
+										, $currentUsername)
+						|| !isInBounds($ship, $this->_arena) ) {
+					$this->killShip($currentUsername);
+					error_log('The ship that moved ran into something. How sad.');
+				}
+				$ship->changeSpeed(-1);
+			} else {
+				error_log('that ship cannot move anymore');
+			}	
 		} else {
 			error_log('cannot move that ship: it does not exist');
 		}
+	}
+
+	public function shootFromShip($currentUsername, $deltaX, $deltaY) {
+		error_log('shooting from ship!');
+		# only fire if ammo, decrease it
 	}
 
 	# assumes there is at least one player
@@ -105,7 +116,15 @@ class Game {
 		if ( $this->_currentPlayer > count($this->_players) - 1 )
 			$this->_currentPlayer = 0;
 		$this->_selectedShipId = -1;
+		$this->_phase = 0;
 		error_log('changing players... new player: ' . $this->getCurrentPlayer());
+	}
+
+	public function nextPhase() {
+		$this->_phase++;
+		if ($this->_phase > 2) {
+			$this->nextPlayer();
+		}
 	}
 
 	public function shipsToHTML($currentUsername) {
@@ -153,11 +172,27 @@ EOT;
 	public function printUserInterface($currentUsername) {
 		# note: arrays can only have one of each key, meaming you can't have two blanks on the same line
 
-		$selectingShip = array(
+		$orderShips = array(
+			'buttons' => array(
+				array("heart" => 'increaseHealth',	"arrow-4-diag" => 'increaseSpeed',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"check" => 'nextPlayer'),
+				array("gear" => 'increaseShield',	"cart" => 'increaseAmmo',			"hidden1" => 'asdf',	"hidden2" => 'asdf',	"arrowstop-1-e" => 'nextPhase')),
+			'message' => "Distribute PP: ", # insert PP here
+			'content' => "SHIP STATS INSERTED HERE"
+		);
+
+		$moveShips = array(
 			'buttons' => array(
 				array("hidden1" => 'asdf',			"triangle-1-n" => 'moveUp',		"hidden2" => 'asdf',			"hidden3" => 'asdf',	"check" => 'nextPlayer'),
-				array("triangle-1-w" => 'moveLeft',	"triangle-1-s" => 'moveDown',	"triangle-1-e" => 'moveRight',	"hidden1" => 'asdf',	"hidden2" => 'asdf')),
+				array("triangle-1-w" => 'moveLeft',	"triangle-1-s" => 'moveDown',	"triangle-1-e" => 'moveRight',	"hidden1" => 'asdf',	"arrowstop-1-e" => 'nextPhase')),
 			'message' => "Move your ship!",
+			'content' => "SHIP STATS INSERTED HERE"
+		);
+
+		$fireShips = array(
+			'buttons' => array(
+				array("hidden1" => 'asdf',				"triangle-1-n" => 'shootUp',	"hidden2" => 'asdf',			"hidden3" => 'asdf',	"check" => 'nextPlayer'),
+				array("triangle-1-w" => 'shootLeft',	"triangle-1-s" => 'shootUp',	"triangle-1-e" => 'shootRight',	"hidden1" => 'asdf',	"arrowstop-1-e" => 'nextPhase')),
+			'message' => "Fire!",
 			'content' => "SHIP STATS INSERTED HERE"
 		);
 
@@ -179,9 +214,29 @@ EOT;
 			# it's your turn!
 			if ($this->_selectedShipId >= 0) {
 				$ship = $this->_ships[$currentUsername][$this->_selectedShipId];
-				$shipStats = "Health: " . $ship['health'];
-				$selectingShip['content'] = $shipStats;
-				$currentSettings = $selectingShip;
+				$shipStats = "Health: " . $ship['health'] . '<br />';
+				$shipStats = $shipStats . "Speed: " . $ship['speed'] . '<br />';
+				$shipStats = $shipStats . "Shield: " . $ship['shield'] . '<br />';
+				$shipStats = $shipStats . "Ammo: " . $ship['ammo'] . '<br />';
+				$shipStats = $shipStats . "Damage: " . $ship['damage'] . '<br />';
+				switch ($this->_phase) {
+					case 0:
+						$orderShips['content'] = $shipStats;
+						$orderShips['message'] = $orderShips['message'] . $ship['power'];
+						$currentSettings = $orderShips;
+						break;
+					case 1:
+						$moveShips['content'] = $shipStats;
+						$currentSettings = $moveShips;
+						break;
+					case 2:
+						$fireShips['content'] = $shipStats;
+						$currentSettings = $fireShips;
+						break;
+					default:
+						trigger_error ( "Invalid phase in game.", E_USER_ERROR );
+						break;
+				}
 			} else {
 				$currentSettings = $noShipSelected;
 			}
@@ -195,12 +250,17 @@ EOT;
 
 	// SIMPLE FUNCTIONS ====================================================>>>
 
+	public function getSelectedShip($currentUsername) {
+		return $this->_ships[$currentUsername][$this->_selectedShipId];
+	}
+
 	public function setSelectedShipId($id) {
 		$this->_selectedShipId = $id;
 	}
 
 	public function arenaToHTML() {			$this->_arena->toHTML();										}
 	public function bodyStyle() {			return $this->_arena->bodyStyle();								}
+	public function getPhase() {			return $this->_phase;											}
 	public function getCurrentPlayer() {	return $this->_players[$this->_currentPlayer];					}
 
 	// STATIC FUNCTIONS ====================================================>>>

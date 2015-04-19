@@ -19,27 +19,100 @@ function shipClicked() {
 	}
 }
 
-function uiButtonClicked() {
-	if ( isset( $_GET['button'] ) ) {
-		switch ( $_GET['button'] ) {
-			case 'nextPlayer':
-				$_SESSION['game']->nextPlayer();
+function orderPhase($actionString) {
+	$selectedShip = $_SESSION['game']->getSelectedShip($_SESSION['current_user']);
+	if ($selectedShip['power'] > 0) {
+		switch ( $actionString ) {
+			case 'increaseHealth':
+				if ($selectedShip['power'] > 2) {
+					$selectedShip->changeHealth(1);
+					$selectedShip->changePower(-3);
+				}
 				break;
-			case 'moveUp':
-				$_SESSION['game']->moveShip($_SESSION['current_user'], 0, -1);
+			case 'increaseShield':
+				$selectedShip->changeShield(1);
+				$selectedShip->changePower(-1);
 				break;
-			case 'moveDown':
-				$_SESSION['game']->moveShip($_SESSION['current_user'], 0, 1);
+			case 'increaseSpeed':
+				$selectedShip->changeSpeed(1);
+				$selectedShip->changePower(-1);
 				break;
-			case 'moveRight':
-				$_SESSION['game']->moveShip($_SESSION['current_user'], 1, 0);
-				break;
-			case 'moveLeft':
-				$_SESSION['game']->moveShip($_SESSION['current_user'], -1, 0);
+			case 'increaseAmmo':
+				$selectedShip->changeAmmo(1);
+				$selectedShip->changePower(-1);
 				break;
 			default:
-				error_log('button click undefined: ' . $_GET['button']);
+				error_log('undefined action for phase: ' . $actionString);
 				break;
+		}
+	}
+}
+
+function movingPhase($actionString) {
+	switch ( $actionString ) {
+		case 'moveUp':
+			$_SESSION['game']->moveShip($_SESSION['current_user'], 0, -1);
+			break;
+		case 'moveDown':
+			$_SESSION['game']->moveShip($_SESSION['current_user'], 0, 1);
+			break;
+		case 'moveRight':
+			$_SESSION['game']->moveShip($_SESSION['current_user'], 1, 0);
+			break;
+		case 'moveLeft':
+			$_SESSION['game']->moveShip($_SESSION['current_user'], -1, 0);
+			break;
+		default:
+			error_log('undefined action for phase: ' . $actionString);
+			break;
+	}
+}
+
+function firingPhase($actionString) {
+	switch ( $actionString ) {
+		case 'shootUp':
+			$_SESSION['game']->shootFromShip($_SESSION['current_user'], 0, -1);
+			break;
+		case 'shootDown':
+			$_SESSION['game']->shootFromShip($_SESSION['current_user'], 0, 1);
+			break;
+		case 'shootRight':
+			$_SESSION['game']->shootFromShip($_SESSION['current_user'], 1, 0);
+			break;
+		case 'shootLeft':
+			$_SESSION['game']->shootFromShip($_SESSION['current_user'], -1, 0);
+			break;
+		default:
+			error_log('undefined action for phase: ' . $actionString);
+			break;
+	}
+}
+
+function uiButtonClicked() {
+	if ( isset( $_GET['button'] ) ) {
+		$actionString = $_GET['button'];
+
+		if ( $actionString === 'nextPlayer' ) {
+			$_SESSION['game']->nextPlayer();
+		} else if ( $actionString === 'nextPhase' ) {
+			$_SESSION['game']->nextPhase();
+		}
+		else 
+		{
+			switch ( $_SESSION['game']->getPhase() ) {
+				case 0:
+					orderPhase($actionString);
+					break;
+				case 1:
+					movingPhase($actionString);
+					break;
+				case 2:
+					firingPhase($actionString);
+					break;
+				default:
+					trigger_error ( "Undefined phase.", E_USER_ERROR );
+					break;
+			}
 		}
 	} else {
 		error_log('button clicked but incorrect other parameters');
