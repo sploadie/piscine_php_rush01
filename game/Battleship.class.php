@@ -68,7 +68,7 @@ abstract class Battleship implements ArrayAccess {
 	}
 
 	public function isDead() {
-		return ($this->data['health'] > 0);
+		return ($this->data['health'] <= 0);
 	}
 
 	public function changeHealth($deltaHealth) {

@@ -16,12 +16,6 @@ class Scout extends Battleship {
 									, 'defaultPower' => 5
 									, 'sprite' => 'battleship.jpg' ) );
 	}
-/*		'hull'		=> 4,
-		'engine'	=> 10,
-		'speed'		=> 18,
-		'agility'	=> 3,
-		'shield'	=> 0,
-		'weapons'	=> array()); }*/
 }
 
 ?>

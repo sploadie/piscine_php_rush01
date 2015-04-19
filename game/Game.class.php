@@ -31,69 +31,73 @@ class Game {
 											, new Obstacle(60, 35, 30, 30) );
 	}
 
-	private function killShip($currentUsername) {
+	private function killShip($currentUsername, $username, $shipId) {
 		# to put back if we do caching of all ship coordinates
 		# $this->_ships[$currentUsername][$this->_selectedShipId]->die();
-		unset($this->_ships[$currentUsername][$this->_selectedShipId]);
-		$this->_selectedShipId = -1;
+		unset($this->_ships[$username][$shipId]);
+		
+		if ($currentUsername === $username && $this->_selectedShipId === $shipId) {
+			$this->_selectedShipId = -1;
+		}
+	}
+
+	private function doCoordinatesIntersect($firstCoordinates, $secondCoordinates) {
+		foreach ($firstCoordinates as $first) {
+			foreach ($secondCoordinates as $second) {
+				if ($first['x'] === $second['x']
+					&& $first['y'] === $second['y']) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private function doCoordinatesIntersectShip($shipCoordinates, $currentUsername) {
+		foreach ( $this->_ships as $username => $ships ) {
+			foreach ( $ships as $shipId => $otherShip ) {
+				# skip the current ship
+				if ( ! ($username === $currentUsername
+						&& $shipId == $this->_selectedShipId ) ) {
+					$otherShipCoordinates = $otherShip->getShipCoordinates();
+					if ($this->doCoordinatesIntersect($otherShipCoordinates
+														, $shipCoordinates)) {
+						return array ( 'ship' => $otherShip
+										, 'username' => $username
+										, 'shipId' => $shipId );
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	private function isInBounds($coordinate) {
+		return ( $coordinate['x'] < $this->_arena->getWidth()
+				&& $coordinate['y'] < $this->_arena->getHeight()
+				&& $coordinate['x'] >= 0
+				&& $coordinate['y'] >= 0 );
+	}
+
+	private function isShipInBounds($ship) {
+		$shipCoordinates = $ship->getShipCoordinates();
+		foreach ( $shipCoordinates as $coordinate ) {
+			if ( ! $this->isInBounds($coordinate) ) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	public function moveShip($currentUsername, $deltaX, $deltaY) {
-
-		function doCoordinatesIntersect($firstCoordinates, $secondCoordinates) {
-			foreach ($firstCoordinates as $first) {
-				foreach ($secondCoordinates as $second) {
-					if ($first['x'] === $second['x']
-						&& $first['y'] === $second['y']) {
-						return true;
-					}
-				}
-			}
-			return false;
-		}
-
-		function didCollisionOccur($ship, $thisShips
-									, $thisSelectedShipId, $currentUsername) {
-			$shipCoordinates = $ship->getShipCoordinates();
-			foreach ( $thisShips as $username => $ships ) {
-				foreach ( $ships as $shipId => $otherShip ) {
-					# skip the current ship
-					if ( ! ($username === $currentUsername
-							&& $shipId == $thisSelectedShipId ) ) {
-						$otherShipCoordinates = $otherShip->getShipCoordinates();
-						if (doCoordinatesIntersect($otherShipCoordinates
-													, $shipCoordinates)) {
-							return true;
-						}
-					}
-				}
-			}
-			return false;
-		}
-
-		function isInBounds($ship, $arena) {
-			$shipCoordinates = $ship->getShipCoordinates();
-			$arenaWidth = $arena->getWidth();
-			$arenaHeight = $arena->getHeight();
-			foreach ( $shipCoordinates as $coordinate ) {
-				if ( $coordinate['x'] >= $arenaWidth
-					|| $coordinate['y'] >= $arenaHeight
-					|| $coordinate['x'] < 0
-					|| $coordinate['y'] < 0 ) {
-					return false;
-				}
-			}
-			return true;
-		}
-
 		if ( isset( $this->_ships[$currentUsername][$this->_selectedShipId] ) ) {
 			$ship = $this->_ships[$currentUsername][$this->_selectedShipId];
 			if ( $ship['speed'] > 0) {
 				$ship->move($deltaX, $deltaY);
-				if ( didCollisionOccur($ship, $this->_ships, $this->_selectedShipId
-										, $currentUsername)
-						|| !isInBounds($ship, $this->_arena) ) {
-					$this->killShip($currentUsername);
+				if ( $this->doCoordinatesIntersectShip($ship->getShipCoordinates()
+														, $currentUsername) !== false
+						|| !$this->isShipInBounds($ship) ) {
+					$this->killShip($currentUsername, $currentUsername, $this->_selectedShipId);
 					error_log('The ship that moved ran into something. How sad.');
 				}
 				$ship->changeSpeed(-1);
@@ -106,8 +110,43 @@ class Game {
 	}
 
 	public function shootFromShip($currentUsername, $deltaX, $deltaY) {
-		error_log('shooting from ship!');
-		# only fire if ammo, decrease it
+
+		$ship = $this->getSelectedShip($currentUsername);
+		if ( $ship['ammo'] > 0 ) {
+			$bulletPosition = array ( 'x' => 0, 'y' => 0 ); # need to set this
+			$thingHit = false;
+			while ( $thingHit === false && $this->isInBounds( $bulletPosition ) ) {
+				$possibility = $this->doCoordinatesIntersectShip( array($bulletPosition)
+														, $currentUsername);
+				if ( $possibility !== false ) {
+					$thingHit = $possibility;
+				} else {
+					error_log('bullet position: ' . $bulletPosition['x'] . ' ' . $bulletPosition['y']);
+					$bulletPosition['x'] += $deltaX;
+					$bulletPosition['y'] += $deltaY;
+				}
+			}
+			if ($thingHit === false) {
+				error_log('hit nothing');
+			} else {
+				error_log('hit something!!!!!');
+				if ( $thingHit['ship']['shield'] > 0 ) {
+					$thingHit['ship']->changeShield(-$ship['damage']);
+					if ( $thingHit['shield'] < 0 ) {
+						$thingHit['ship']->changeHealth( $thingHit['shield'] );
+					}
+				} else {
+					$thingHit['ship']->changeHealth(-$ship['damage']);
+				}
+
+				if ($thingHit['ship']->isDead()) {
+					$this->killShip($currentUsername, $thingHit['username'], $thingHit['shipId']);
+				}
+			}
+			$ship->changeAmmo(-1);
+		} else {
+			error_log('this ship has no more ammo');
+		}
 	}
 
 	# assumes there is at least one player
@@ -191,7 +230,7 @@ EOT;
 		$fireShips = array(
 			'buttons' => array(
 				array("hidden1" => 'asdf',				"triangle-1-n" => 'shootUp',	"hidden2" => 'asdf',			"hidden3" => 'asdf',	"check" => 'nextPlayer'),
-				array("triangle-1-w" => 'shootLeft',	"triangle-1-s" => 'shootUp',	"triangle-1-e" => 'shootRight',	"hidden1" => 'asdf',	"arrowstop-1-e" => 'nextPhase')),
+				array("triangle-1-w" => 'shootLeft',	"triangle-1-s" => 'shootDown',	"triangle-1-e" => 'shootRight',	"hidden1" => 'asdf',	"arrowstop-1-e" => 'nextPhase')),
 			'message' => "Fire!",
 			'content' => "SHIP STATS INSERTED HERE"
 		);
@@ -199,7 +238,7 @@ EOT;
 		$noShipSelected = array(
 			'buttons' => array(
 				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"check" => 'nextPlayer'),
-				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"hidden5" => 'asdf')),
+				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"arrowstop-1-e" => 'nextPhase')),
 			'message' => "Select a ship",
 			'content' => ""
 		);
