@@ -244,7 +244,7 @@ EOT;
 		);
 
 		$notYourTurn = array(
-			'buttons' => array(),
+			'buttons' => array( array("refresh" => 'refresh') ),
 			'message' => "It's not your turn.",
 			'content' => ""
 		);

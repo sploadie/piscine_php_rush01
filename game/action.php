@@ -96,6 +96,9 @@ function uiButtonClicked() {
 			$_SESSION['game']->nextPlayer();
 		} else if ( $actionString === 'nextPhase' ) {
 			$_SESSION['game']->nextPhase();
+		} else if ( $actionString === 'refresh' ) {
+			error_log('refresh by ' . $_SESSION['current_user']);
+			return;
 		}
 		else 
 		{
