@@ -35,7 +35,7 @@ require_once('../url.php');
 		<div id="overlay-thingy" class="ui-widget-shadow ui-corner-all"></div>
 	</div>
 	<div id="gui" class="ui-widget ui-widget-content ui-corner-all">
-		<?php $_SESSION['game']->controlUiToHTML(); ?>
+		<?php $_SESSION['game']->printUserInterface($_SESSION['current_user']); ?>
 	</div>
 </body>
 </html>
