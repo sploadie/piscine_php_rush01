@@ -1,15 +1,15 @@
 <?php
 
-session_start();
+@session_start();
 
 require_once('classIncludes.php');
 require_once('../url.php');
 
 /*if (!isset($_SESSION['game'])) {
 */	$game = new Game( array ( 'tfleming' => array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 3) )
-													, 'color' => 0xFF0000 )
+													, 'color' => '#FF0000' )
 							, 'sploadie' => array ( 'ships' => array ( new Scout(146, 98), new Scout(146, 96) )
-													, 'color' => 0x00FF00 ) ) );
+													, 'color' => '#00FF00' ) ) );
 	$_SESSION['game'] = $game;
 	error_log('setting up a new game');
 /*}
