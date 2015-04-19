@@ -8,8 +8,8 @@ class Game {
 
 	private $_currentSettings = array(
 		'buttons' => array(
-			array("minusthick",		"triangle-1-n",	"plusthick",	"hidden",	"check"),
-			array("triangle-1-w",	"triangle-1-s",	"triangle-1-e",	"hidden",	"comment")),
+			array("minusthick" => 'asdf',		"triangle-1-n" => 'moveUp',		"plusthick" => 'asdf',			"hidden" => 'asdf',	"check" => 'asdf'),
+			array("triangle-1-w" => 'moveLeft',	"triangle-1-s" => 'moveDown',	"triangle-1-e" => 'moveRight',	"hidden" => 'asdf',	"comment" => 'asdf')),
 		'message' => "Hey you, Player.<br />I got the Hocus Focus.",
 		'content' => ""
 	);
@@ -47,7 +47,9 @@ EOT;
 		$html = "";
 		foreach ($buttons as $button_row) {
 			$html = $html . '<ul id="icons" class="ui-widget ui-helper-clearfix">' . PHP_EOL;
-			foreach ($button_row as $button) { $html = $html . $this->_uiButton($button); }
+			foreach ($button_row as $buttonName => $whatItDoes) {
+				$html = $html . $this->_uiButton($buttonName, $whatItDoes);
+			}
 			$html = $html . '</ul>' . PHP_EOL;
 		}
 		return $html;
@@ -56,14 +58,14 @@ EOT;
 	# <li class="ui-state-default ui-corner-all [game-button"|" style=visibility:hidden;]">
 	# <span class="ui-icon (ui-icon-TYPE)"></span>
 	# </li>
-	private function _uiButton($type) {
+	private function _uiButton($buttonName, $whatItDoes) {
 		$firstBit = '<li class="ui-state-default ui-corner-all';
-		if ($type === 'hidden') {
+		if ($buttonName === 'hidden') {
 			$secondBit = '" style="visibility: hidden;">';
 			$span = '<span class="ui-icon"></span>';
 		} else {
-			$secondBit = ' game-button" title="action.php?action=buttonClicked&button=' . $type . '">';
-			$span = '<span class="ui-icon ui-icon-' . $type . '"></span>';
+			$secondBit = ' game-button" title="action.php?action=buttonClicked&button=' . $whatItDoes . '">';
+			$span = '<span class="ui-icon ui-icon-' . $buttonName . '"></span>';
 		}
 		return $firstBit . $secondBit . $span . '</li>' . PHP_EOL;
 	}

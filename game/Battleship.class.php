@@ -16,6 +16,11 @@ abstract class Battleship implements ArrayAccess {
 		}
 	}
 
+	public function move($deltaX, $deltaY) {
+		$this->data['x'] += $deltaX;
+		$this->data['y'] += $deltaY;
+	}
+
 	// ARRAY ACCESS ==================================>
 	public function offsetSet($offset, $value) {
 		trigger_error ( "You can't set the stuff in BattleShip, silly goose! ", E_USER_ERROR );

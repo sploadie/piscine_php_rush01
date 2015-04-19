@@ -5,6 +5,7 @@ require_once('classIncludes.php');
 error_log("action.php is called!");
 
 if ($_GET['action'] === 'shipClicked') {
+	# they clicked on a ship
 	if ( isset( $_GET['username'] ) && isset( $_GET['shipId'] ) ) {
 		if ( $_SESSION['game']->getCurrentPlayer() === $_GET['username'] ) {
 			$_SESSION['selectedShipId'] = $_GET['shipId'];
@@ -16,6 +17,7 @@ if ($_GET['action'] === 'shipClicked') {
 		error_log('shipClicked action but incorrect other parameters');
 	}
 } else if ($_GET['action'] === 'buttonClicked') {
+	# they clicked a button on the bottom right
 	if ( isset( $_GET['button'] ) ) {
 		error_log('button clicked: ' . $_GET['button']);
 	} else {

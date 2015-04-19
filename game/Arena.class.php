@@ -85,6 +85,15 @@ EOT;
 		}
 	}
 
+	public function moveShip($username, $shipId, $deltaX, $deltaY) {
+		if ( isset( $_ships[$username][$shipId] ) ) {
+			
+		} else {
+			error_log('cannot move that ship: it does not exist');
+		}
+		
+	}
+
 	public function getWidth()		{ return $this->_width;		}
 	public function getHeight()		{ return $this->_height;	}
 	public function getTileSize()	{ return $this->_tile_size;	}
