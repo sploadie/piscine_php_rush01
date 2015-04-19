@@ -29,9 +29,10 @@ class Game {
 											, new Obstacle(60, 35, 30, 30) );
 	}
 
-	public function moveShip($username, $shipId, $deltaX, $deltaY) {
-		if ( isset( $_ships[$username][$shipId] ) ) {
-			# I NEED TO WRITE THIS
+	public function moveShip($currentUsername, $deltaX, $deltaY) {
+		if ( isset( $this->_ships[$currentUsername][$this->_selectedShipId] ) ) {
+			$ship = $this->_ships[$currentUsername][$this->_selectedShipId];
+			$ship->move($deltaX, $deltaY);
 		} else {
 			error_log('cannot move that ship: it does not exist');
 		}
@@ -46,22 +47,8 @@ class Game {
 		error_log('changing players... new player: ' . $this->getCurrentPlayer());
 	}
 
-	public function printUserInterface($currentUsername) {
-		$currentSettings = array(
-			'buttons' => array(
-				array("minusthick" => 'asdf',		"triangle-1-n" => 'moveUp',		"plusthick" => 'asdf',			"hidden" => 'asdf',	"check" => 'nextPlayer'),
-				array("triangle-1-w" => 'moveLeft',	"triangle-1-s" => 'moveDown',	"triangle-1-e" => 'moveRight',	"hidden" => 'asdf',	"comment" => 'asdf')),
-			'message' => "Hey you, Player.<br />I got the Hocus Focus.",
-			'content' => ""
-		);
-		$this->userInterfaceToHTML($currentSettings);
-	}
-
 	public function shipsToHTML($currentUsername) {
-		var_dump($this->_arena);
-		var_dump(get_class_methods($this->_arena));
-/*		$tileSize = $this->_arena->bodyStyle();
-*/		$tileSize = 10;#$this->_arena->getTileSize();
+		$tileSize = $this->_arena->getTileSize();
 
 		foreach ($this->_ships as $username => $ships) {
 			foreach ($ships as $key => $ship) {
@@ -94,6 +81,46 @@ class Game {
 EOT;
 			}
 		}
+	}
+
+	public function printUserInterface($currentUsername) {
+		# note: arrays can only have one of each key, meaming you can't have two blanks on the same line
+
+		$moveTheShip = array(
+			'buttons' => array(
+				array("hidden1" => 'asdf',			"triangle-1-n" => 'moveUp',		"hidden2" => 'asdf',			"hidden3" => 'asdf',	"check" => 'nextPlayer'),
+				array("triangle-1-w" => 'moveLeft',	"triangle-1-s" => 'moveDown',	"triangle-1-e" => 'moveRight',	"hidden1" => 'asdf',	"hidden2" => 'asdf')),
+			'message' => "Move your ship!",
+			'content' => ""
+		);
+
+		$selectAShip = array(
+			'buttons' => array(
+				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"check" => 'nextPlayer'),
+				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"hidden5" => 'asdf')),
+			'message' => "Select a ship",
+			'content' => ""
+		);
+
+		$notYourTurn = array(
+			'buttons' => array(),
+			'message' => "It's not your turn.",
+			'content' => ""
+		);
+
+		if ( $currentUsername === $this->getCurrentPlayer() ) {
+			# it's your turn!
+			if ($this->_selectedShipId >= 0) {
+				$currentSettings = $moveTheShip;
+			} else {
+				$currentSettings = $selectAShip;
+			}
+		} else {
+			# not your turn
+			$currentSettings = $notYourTurn;
+		}
+
+		$this->userInterfaceToHTML($currentSettings);
 	}
 
 	// SIMPLE FUNCTIONS ====================================================>>>
@@ -131,7 +158,13 @@ EOT;
 			foreach ($buttons as $button_row) {
 				$html = $html . '<ul id="icons" class="ui-widget ui-helper-clearfix">' . PHP_EOL;
 				foreach ($button_row as $buttonName => $whatItDoes) {
-					$html = $html . uiButton($buttonName, $whatItDoes);
+					$realName = $buttonName;
+					if ( substr($realName, 0, 5) === "blank" ) {
+						$realName = "blank";
+					} else if ( substr($realName, 0, 6) === "hidden" ) {
+						$realName = "hidden";
+					}
+					$html = $html . uiButton($realName, $whatItDoes);
 				}
 				$html = $html . '</ul>' . PHP_EOL;
 			}

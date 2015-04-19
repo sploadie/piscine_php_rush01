@@ -12,7 +12,7 @@ final class Arena {
 	public function __construct() {
 		$this->_width = 150;
 		$this->_height = 100;
-		$this->_tileSize = 10;
+		$this->_tileSize = 9;
 	}
 
 	public function toHTML() {
@@ -58,7 +58,7 @@ EOT;
 	public function bodyStyle() {
 		$bodyWidth = $this->_width * $this->_tileSize + 200;
 		$bodyHeight = $this->_width * $this->_tileSize + 200;
-		return "padding: 100px 100px 100px 100px; width: " . $bodyWidth . "px; height: " . $bodyHeight . "px;";
+		return "padding: 50px 50px 50px 50px; width: " . $bodyWidth . "px; height: " . $bodyHeight . "px;";
 	}
 /*
 	public function getWidth()		{ return $this->_width;		}

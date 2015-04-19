@@ -9,8 +9,11 @@ function shipClicked() {
 			$_SESSION['game']->setSelectedShipId($_GET['shipId']);
 			error_log('selected ship: ' . $_GET['shipId']);
 		}
-		else
-			error_log('wrong player selected a ship: ' . $_GET['username'] . ' (current = ' . $_SESSION['game']->getCurrentPlayer() . ")");
+		else {
+			$_SESSION['game']->setSelectedShipId(-1);
+			error_log('wrong player selected a ship: ' . $_GET['username']
+						. ' (current = ' . $_SESSION['game']->getCurrentPlayer() . ")");
+		}
 	} else {
 		error_log('shipClicked action but incorrect other parameters');
 	}
@@ -21,6 +24,18 @@ function uiButtonClicked() {
 		switch ( $_GET['button'] ) {
 			case 'nextPlayer':
 				$_SESSION['game']->nextPlayer();
+				break;
+			case 'moveUp':
+				$_SESSION['game']->moveShip($_SESSION['current_user'], 0, -1);
+				break;
+			case 'moveDown':
+				$_SESSION['game']->moveShip($_SESSION['current_user'], 0, 1);
+				break;
+			case 'moveRight':
+				$_SESSION['game']->moveShip($_SESSION['current_user'], 1, 0);
+				break;
+			case 'moveLeft':
+				$_SESSION['game']->moveShip($_SESSION['current_user'], -1, 0);
 				break;
 			default:
 				error_log('button click undefined: ' . $_GET['button']);
