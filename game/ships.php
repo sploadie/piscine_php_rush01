@@ -1,5 +1,6 @@
 <?php
-require_once('Game.class.php');
-session_start();
+require_once('classIncludes.php');
+@session_start();
+
 $_SESSION['game']->shipsToHTML();
 ?>
