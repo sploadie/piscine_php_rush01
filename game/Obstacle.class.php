@@ -14,6 +14,7 @@ class Obstacle extends Battleship {
 									, 'damage' => 1
 									, 'defaultAmmo' => 10
 									, 'defaultPower' => 5
+									, 'range' => 10
 									, 'sprite' => 'obstacle.gif' ) );
 	}
 }

@@ -17,6 +17,7 @@ abstract class Battleship implements ArrayAccess {
 			&& isset($kwargs['damage'])
 			&& isset($kwargs['defaultAmmo'])
 			&& isset($kwargs['defaultPower'])
+			&& isset($kwargs['range'])
 			&& isset($kwargs['sprite']) ) {
 			$this->data = $kwargs;
 

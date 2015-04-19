@@ -116,7 +116,10 @@ class Game {
 			$bulletPosition = array ( 'x' => $ship['x'] + intval($ship['width'] / 2)
 									, 'y' => $ship['y'] + intval($ship['height'] / 2) );
 			$thingHit = false;
-			while ( $thingHit === false && $this->isInBounds( $bulletPosition ) ) {
+			$bulletTraveled = 0;
+			while ( $thingHit === false
+					&& $this->isInBounds( $bulletPosition )
+					&& $bulletTraveled <= $ship['range'] ) {
 				$possibility = $this->doCoordinatesIntersectShip( array($bulletPosition)
 														, $currentUsername);
 				if ( $possibility !== false ) {
@@ -125,6 +128,7 @@ class Game {
 					$bulletPosition['x'] += $deltaX;
 					$bulletPosition['y'] += $deltaY;
 				}
+				$bulletTraveled++;
 			}
 			if ($thingHit === false) {
 			} else {
