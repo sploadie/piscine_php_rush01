@@ -1,0 +1,21 @@
+<- Arena ----------------------------------------------------------------------
+
+The Arena represents the field in which the ships move.
+
+
+Public functions:
+
+doc() :: returns this file
+
+__construct() :: sets up a new Arena
+
+toHTML() :: echos the grid that goes behinds the players in HTML
+
+bodyStyle() :: returns the string representing the style needed by the body
+	tag in the HTML page
+
+getWidth() :: returns the width of the grid
+getHeight() :: returns the height of the grid
+getTileSize() :: returns the tile size of the grid (pixels)
+
+---------------------------------------------------------------------- Arena ->

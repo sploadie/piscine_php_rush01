@@ -1,0 +1,21 @@
+<- Battleship ----------------------------------------------------------------------
+
+The Battleship class represents a ship on the field.
+
+
+Public functions:
+
+doc() :: returns this file
+
+__construct(kwargs) :: sets up a new Battleship with the kwargs as the private data
+	which can be referenced by using the object as an array. The things that are
+	needed here are likely to change so we won't list them.
+
+resetBeforeMove() :: resets things that need to reset before beginning a new move
+	for that player
+
+
+
+
+
+---------------------------------------------------------------------- Battleship ->

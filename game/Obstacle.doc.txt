@@ -1,0 +1,14 @@
+<- Battleship ----------------------------------------------------------------------
+
+The Battleship class represents a ship on the field.
+
+
+Public functions:
+
+doc() :: returns this file
+
+__construct() :: sets up a new Battleship
+
+
+
+---------------------------------------------------------------------- Battleship ->
