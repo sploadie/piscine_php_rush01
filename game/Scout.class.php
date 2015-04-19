@@ -3,6 +3,11 @@ require_once('Battleship.class.php');
 
 class Scout extends Battleship {
 
+	public static function doc()
+	{
+	    return file_get_contents('./Scout.doc.txt') . PHP_EOL;
+	}
+
 	public function __construct($x, $y) {
 		parent::__construct( array ( 'x' => $x
 									, 'y' => $y

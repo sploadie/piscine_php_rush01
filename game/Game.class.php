@@ -12,6 +12,11 @@ class Game {
 	private $_colors;			# color strings associated with each player
 	private $_phase;			# 0 = order; 1 = move; 2 = fire
 
+	public static function doc()
+	{
+	    return file_get_contents('./Game.doc.txt') . PHP_EOL;
+	}
+
 	public function __construct( array $kwargs ) {
 		$this->_arena = new Arena();
 

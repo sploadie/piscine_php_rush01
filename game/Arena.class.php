@@ -9,6 +9,11 @@ final class Arena {
 	private $_height;
 	private $_tileSize;
 
+	public static function doc()
+	{
+	    return file_get_contents('./Arena.doc.txt') . PHP_EOL;
+	}
+
 	public function __construct() {
 		$this->_width = 150;
 		$this->_height = 100;

@@ -3,7 +3,13 @@
 require_once('classIncludes.php');
 
 abstract class Battleship implements ArrayAccess {
+
 	protected $data;
+
+	public static function doc()
+	{
+	    return file_get_contents('./Battleship.doc.txt') . PHP_EOL;
+	}
 
 	public function __construct( array $kwargs ) {
 		# todo: have some of these have actual default values
