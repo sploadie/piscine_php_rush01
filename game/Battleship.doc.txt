@@ -14,8 +14,28 @@ __construct(kwargs) :: sets up a new Battleship with the kwargs as the private d
 resetBeforeMove() :: resets things that need to reset before beginning a new move
 	for that player
 
+move($deltaX, $deltaY) :: moves the ship by dx, dy
 
+getShipCoordinates() :: returns the ship coordinates in an array
 
+isDead() :: is it dead? 
 
+changeHealth($deltaHealth) :: self explanitory (delta value)
+
+changePower($deltaPower) :: self explanitory (delta value)
+
+changeShield($deltaPower) :: self explanitory (delta value)
+
+changeSpeed($deltaSpeed) :: self explanitory (delta value)
+
+changeAmmo($deltaAmmo) :: self explanitory (delta value)
+
+offsetSet($offset, $value) :: breaks the program. not recommended.
+
+offsetExists($offset) :: it will exist or you're doing something wrong
+
+offsetUnset($offset) :: breaks the program. not recommended.
+
+offsetGet($offset) :: returns the value (pretends it's an array)
 
 ---------------------------------------------------------------------- Battleship ->

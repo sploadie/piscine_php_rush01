@@ -1,14 +1,34 @@
-<- Battleship ----------------------------------------------------------------------
+<- Game ----------------------------------------------------------------------
 
-The Battleship class represents a ship on the field.
+The Game class contains everything about a game.
 
 
 Public functions:
 
 doc() :: returns this file
 
-__construct() :: sets up a new Battleship
+__construct() :: sets up a new Game
 
+moveShip($currentUsername, $deltaX, $deltaY)
 
+shootFromShip($currentUsername, $deltaX, $deltaY)
 
----------------------------------------------------------------------- Battleship ->
+nextPlayer() :: moves to the next player
+
+nextPhase() :: moves to the next phase
+
+shipsToHTML($currentUsername) :: echos the img tags that represent the ships
+
+printUserInterface($currentUsername) :: echos the HTML for the UI on the bottom right
+
+__toString() :: This is a game!
+
+arenaToHTML() :: echos the HTML necessary for the arena (a table)
+
+bodyStyle() :: see Arena->bodyStyle()
+
+getPhase() :: returns the phase (int)
+
+getCurrentPlayer() :: returns the current player string
+
+---------------------------------------------------------------------- Game ->
