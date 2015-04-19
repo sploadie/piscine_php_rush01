@@ -28,7 +28,7 @@ require_once('../url.php');
 	<div id="space">
 		<?php $_SESSION['game']->arenaToHTML(); ?>
 		<div id="ships">
-			<?php $_SESSION['game']->shipsToHTML(); ?>
+			<?php $_SESSION['game']->shipsToHTML($_SESSION['current_user']); ?>
 		</div>
 	</div>
 	<div class="ui-overlay">
