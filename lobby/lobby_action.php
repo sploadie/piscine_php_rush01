@@ -1,5 +1,7 @@
 <?php
 require_once('../php_assets/exit_to.php');
+require_once('../game/classIncludes.php');
+
 @session_start();
 if (file_exists("../private/lobby"))
 	$game_list = unserialize(file_get_contents("../private/lobby"));
@@ -21,6 +23,11 @@ switch ($_POST['action']) {
 		$host = $_SESSION['game_host'];
 		if ($host === $_SESSION['current_user']) {
 			$game_list[$host]['started'] = true;
+			# note: hardcoded
+			$game_list[$host]['game'] = new Game( array ( 'tfleming' => array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 4) )
+																				, 'color' => '#FF0000' )
+														, 'sploadie' => array ( 'ships' => array ( new Scout(146, 98), new Scout(146, 96) )
+																				, 'color' => '#00FF00' ) ) );
 			file_put_contents("../private/lobby", serialize($game_list));
 			exit_to("/game");
 		}

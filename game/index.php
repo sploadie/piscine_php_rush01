@@ -6,16 +6,31 @@ require_once('classIncludes.php');
 require_once('../url.php');
 require_once('../php_assets/exit_to.php');
 
+$game_list = unserialize(file_get_contents("../private/lobby"));
+unset($_SESSION['game_host']);
+if (isset($game_list[$_SESSION['current_user']])) {
+	if (is_string($game_list[$_SESSION['current_user']])) {
+		$host = $game_list[$_SESSION['current_user']];
+		if (isset($game_list[$host]) && !is_string($game_list[$host])) {
+			$_SESSION['game_host'] = $host;
+		} else {
+			unset($game_list[$host]);
+			file_put_contents("../private/lobby", serialize($game_list));
+			exit_to("/");
+		}
+	} else {
+		$_SESSION['game_host'] = $_SESSION['current_user'];
+	}
+} else {
+	exit_to("/");
+}
+$game = $game_list[$_SESSION['game_host']]['game'];
+error_log("game object as " . $_SESSION['current_user'] . ": " . $game);
+
 if (!isset($_SESSION['game_host'])) { exit_to("/"); }
 /*if (!isset($_SESSION['game'])) {
-*/	$game = new Game( array ( 'tfleming' => array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 3) )
-													, 'color' => '#FF0000' )
-							, 'sploadie' => array ( 'ships' => array ( new Scout(146, 98), new Scout(146, 96) )
-													, 'color' => '#00FF00' ) ) );
-	$_SESSION['game'] = $game;
-	error_log('setting up a new game');
-/*}
-*/
+*/	
+
 
 ?>
 

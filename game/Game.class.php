@@ -366,6 +366,10 @@ EOT;
 EOT;
 	}
 
+	public function __toString() {
+		return "This is a game!";
+	}
+
 }
 
 ?>
