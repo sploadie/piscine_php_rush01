@@ -97,12 +97,12 @@ function uiButtonClicked() {
 		} else if ( $actionString === 'nextPhase' ) {
 			$_SESSION['game']->nextPhase();
 		} else if ( $actionString === 'refresh' ) {
-			error_log('refresh by ' . $_SESSION['current_user']);
+			error_log('refresh by ' . $_SESSION['current_user']);/*
 			error_log('TAKE OUT ');
 			if ($_SESSION['current_user'] === 'tfleming')
 				$_SESSION['current_user'] = 'sploadie';
 			else
-				$_SESSION['current_user'] = 'tfleming';
+				$_SESSION['current_user'] = 'tfleming';*/
 			return;
 		}
 		else 
