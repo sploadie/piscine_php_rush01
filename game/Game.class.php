@@ -4,7 +4,9 @@ require_once('classIncludes.php');
 
 class Game {
 	private $_arena;
-	private $_currentPlayer;
+	private $_players;			# array of usernames
+	private $_currentPlayer;	# index of current player in _players
+	private $_ships;			# $this->_ships['tfleming'] ==> ships belonging to tfleming
 
 	private $_currentSettings = array(
 		'buttons' => array(
@@ -14,21 +16,28 @@ class Game {
 		'content' => ""
 	);
 
-	public function __construct( array $userShips ) {
+	public function __construct( array $kwargs ) {
 		$this->_arena = new Arena();
 
-		$this->_currentPlayer = "tfleming";
-
-		foreach ($userShips as $user => $ships) {
-			$this->_arena->setUserShips($user, $ships);
+		foreach ($kwargs as $user => $userStuff) {
+			$this->_players[] = $user;
+			$this->_ships[$user] = $userStuff['ships'];
 		}
+		$this->_currentPlayer = 0;
 	}
 
-	public function bodyStyle() {
-		$body_width = $this->_arena->getWidth() * $this->_arena->getTileSize() + 200;
-		$body_height = $this->_arena->getHeight() * $this->_arena->getTileSize() + 200;
-		return "padding: 100px 0px 0px 100px; width: " . $body_width . "px; height: " . $body_height . "px;";
+	public function moveShip($username, $shipId, $deltaX, $deltaY) {
+		if ( isset( $_ships[$username][$shipId] ) ) {
+			# I NEED TO WRITE THIS
+		} else {
+			error_log('cannot move that ship: it does not exist');
+		}
+		
 	}
+
+	public function getCurrentPlayer() {	return $this->_players[$this->_currentPlayer];	}
+
+	/* EVERYTHING ABOUT STYLE ===========================================>>> */
 
 	public function controlUiToHTML() {
 		$content = $this->_currentSettings['content'];
@@ -70,16 +79,33 @@ EOT;
 		return $firstBit . $secondBit . $span . '</li>' . PHP_EOL;
 	}
 
-	public function arenaToHTML() {			$this->_arena->toHTML();		}
-	public function shipsToHTML() {			$this->_arena->shipsToHTML();	}
-	public function getCurrentPlayer() {	return $this->_currentPlayer;	}
+	public function shipsToHTML() {
+		$tileSize = $this->_arena->getTileSize();
 
-	public function __call($name, $arguments)
-    {
-        // Note: value of $name is case sensitive.
-        error_log( "Calling object method '$name' "
-             . implode(', ', $arguments). "\n");
-    }
+		foreach ($this->_ships as $username => $ships) {
+			foreach ($ships as $key => $ship) {
+				$img_x_pos = ($tileSize * $ship['x']);
+				$img_y_pos = ($tileSize * $ship['y']);
+				$img_width = $ship['width'] * $tileSize;
+				$img_height = $ship['height'] * $tileSize;
+				$img_url = urlPath('img/' . $ship['sprite']);
+				#$transform = ($ship['flipped'] ? "transform:scale(-1,1);" : "");
+				$srcWidthHeight = "src=\"$img_url\" width=\"$img_width\" height=\"$img_height\"";
+				$heightWidth = "width: $img_width; height: $img_height;";
+				$imageStuff = "left: $img_x_pos; top: $img_y_pos; position: absolute;";#" $transform";
+				$title = "title='action.php?action=shipClicked&username=$username&shipId=$key'";
+				$background = "box-shadow: 3px 3px 5px #FFFFFF;";
+				echo <<<EOT
+				<img class="battleship game-button" $title $srcWidthHeight style="$heightWidth $imageStuff $background" />
+EOT;
+			}
+		}
+	}
+
+	public function arenaToHTML() {		$this->_arena->toHTML();				}
+	public function bodyStyle() {		return $this->_arena->bodyStyle();		}
+
+	/* <<<=========================================== EVERYTHING ABOUT STYLE */
 }
 
 ?>

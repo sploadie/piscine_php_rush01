@@ -6,8 +6,10 @@ require_once('classIncludes.php');
 require_once('../url.php');
 
 /*if (!isset($_SESSION['game'])) {
-*/	$game = new Game( array ( 'tfleming' => array ( new Scout(1, 1), new Scout(1, 3) )
-							, 'sploadie' => array ( new Scout(146, 98), new Scout(146, 96) ) ) );
+*/	$game = new Game( array ( 'tfleming' => array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 3) )
+													, 'color' => 0xFF0000 )
+							, 'sploadie' => array ( 'ships' => array ( new Scout(146, 98), new Scout(146, 96) )
+													, 'color' => 0x00FF00 ) ) );
 	$_SESSION['game'] = $game;
 	error_log('setting up a new game');
 /*}
@@ -22,7 +24,7 @@ require_once('../url.php');
 	<script type="text/javascript" src="<?= urlPath("jquery/external/jquery/jquery.js"); ?>"></script>
 	<script type="text/javascript" src="<?= urlPath("game/gameAction.js"); ?>"></script>
 </head>
-<body style="<?php echo $_SESSION['game']->bodyStyle(); ?>">
+<body style="<?= $_SESSION['game']->bodyStyle(); ?>">
 	<div id="space">
 		<?php $_SESSION['game']->arenaToHTML(); ?>
 		<div id="ships">
