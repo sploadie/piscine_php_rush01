@@ -17,7 +17,7 @@ class Game {
 	public function __construct( array $userShips ) {
 		$this->_arena = new Arena();
 
-		$_currentPlayer = "tfleming";
+		$this->_currentPlayer = "tfleming";
 
 		foreach ($userShips as $user => $ships) {
 			$this->_arena->setUserShips($user, $ships);
@@ -53,14 +53,24 @@ EOT;
 		return $html;
 	}
 
+	# <li class="ui-state-default ui-corner-all [game-button"|" style=visibility:hidden;]">
+	# <span class="ui-icon (ui-icon-TYPE)"></span>
+	# </li>
 	private function _uiButton($type) {
-		if ($type === 'hidden')	{ return '<li class="ui-state-default ui-corner-all" style="visibility: hidden;"><span class="ui-icon"></span></li>' . PHP_EOL; }
-		else					{ return '<li class="ui-state-default ui-corner-all game-button" title="action.php?button=' . $type . '"><span class="ui-icon ui-icon-' . $type . '"></span></li>' . PHP_EOL; }
+		$firstBit = '<li class="ui-state-default ui-corner-all';
+		if ($type === 'hidden') {
+			$secondBit = '" style="visibility: hidden;">';
+			$span = '<span class="ui-icon"></span>';
+		} else {
+			$secondBit = ' game-button" title="action.php?action=buttonClicked&button=' . $type . '">';
+			$span = '<span class="ui-icon ui-icon-' . $type . '"></span>';
+		}
+		return $firstBit . $secondBit . $span . '</li>' . PHP_EOL;
 	}
 
 	public function arenaToHTML() {			$this->_arena->toHTML();		}
 	public function shipsToHTML() {			$this->_arena->shipsToHTML();	}
-	public function getCurrentPlayer() {	return $this->_currentPlayer;			}
+	public function getCurrentPlayer() {	return $this->_currentPlayer;	}
 
 	public function __call($name, $arguments)
     {

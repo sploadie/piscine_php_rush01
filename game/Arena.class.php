@@ -77,7 +77,7 @@ EOT;
 				$srcWidthHeight = "src=\"$img_url\" width=\"$img_width\" height=\"$img_height\"";
 				$heightWidth = "width: $img_width; height: $img_height;";
 				$imageStuff = "left: $img_x_pos; top: $img_y_pos; position: absolute;";#" $transform";
-				$title = "title='action.php?username=$username&shipId=$key'";
+				$title = "title='action.php?action=shipClicked&username=$username&shipId=$key'";
 				echo <<<EOT
 				<img class="battleship game-button" $title $srcWidthHeight style="$heightWidth $imageStuff" />
 EOT;
