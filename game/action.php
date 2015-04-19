@@ -1,6 +1,8 @@
 <?php
 require_once('classIncludes.php');
 
+require_once('fileCommunication.php');
+
 @session_start();
 
 function shipClicked() {
@@ -97,6 +99,7 @@ function uiButtonClicked() {
 		} else if ( $actionString === 'nextPhase' ) {
 			$_SESSION['game']->nextPhase();
 		} else if ( $actionString === 'refresh' ) {
+			setSessionToUnserialized();
 			error_log('refresh by ' . $_SESSION['current_user']);/*
 			error_log('TAKE OUT ');
 			if ($_SESSION['current_user'] === 'tfleming')

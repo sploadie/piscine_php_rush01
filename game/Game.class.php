@@ -171,6 +171,10 @@ class Game {
 		$this->_selectedShipId = -1;
 		$this->_phase = 0;
 		resetShips($this->_ships[$this->getCurrentPlayer()]);
+
+		# serialize the game
+		serializeGameInSession();
+		
 		error_log('changing players... new player: ' . $this->getCurrentPlayer());
 	}
 
