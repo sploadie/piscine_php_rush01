@@ -1,1 +1,1 @@
-a:1:{s:4:"root";a:2:{s:7:"players";a:1:{i:0;s:4:"root";}s:4:"name";s:13:"Boom, fucker.";}}
+a:2:{s:4:"root";a:3:{s:7:"players";a:2:{i:0;s:4:"root";i:1;s:3:"foo";}s:4:"name";s:5:"Boom.";s:7:"started";b:1;}s:12:"current_user";s:4:"root";}

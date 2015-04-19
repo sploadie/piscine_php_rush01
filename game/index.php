@@ -4,7 +4,9 @@
 
 require_once('classIncludes.php');
 require_once('../url.php');
+require_once('../php_assets/exit_to.php');
 
+if (!isset($_SESSION['game_host'])) { exit_to("/"); }
 /*if (!isset($_SESSION['game'])) {
 */	$game = new Game( array ( 'tfleming' => array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 3) )
 													, 'color' => '#FF0000' )
