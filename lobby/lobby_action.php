@@ -43,7 +43,7 @@ switch ($_POST['action']) {
 			}
 			$game_list[$_POST['host']]['players'][] = $_SESSION['current_user'];
 		}
-		$game_list['current_user'] = $_POST['host'];
+		$game_list[$_SESSION['current_user']] = $_POST['host'];
 		break;
 	default:
 		echo "Action [" . $_POST['action'] . "] unknown.";

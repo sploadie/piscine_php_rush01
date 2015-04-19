@@ -64,7 +64,7 @@ function lobbyAction(form_id) {
 	<input type="hidden" name="action" value="Create Game"/>
 	<input type="submit" value="Create Game"/>
 </form>
-<?php } if (isset($_SESSION['game_host']) && ($_SESSION['game_host'] === $_SESSION['current_user'] || $game_list[$_SESSION['game_host']]['started'] == true) && count($game_list[$_SESSION['current_user']]['players']) > 1) { ?>
+<?php } if (isset($_SESSION['game_host']) && ($_SESSION['game_host'] === $_SESSION['current_user'] || $game_list[$_SESSION['game_host']]['started'] == true) && count($game_list[$_SESSION['game_host']]['players']) > 1) { ?>
 <form id="start_game" method="post" action="lobby/lobby_action.php">
 	<input type="hidden" name="action" value="Start Game"/>
 	<input type="submit" value="Start Game"/>
