@@ -24,10 +24,32 @@ switch ($_POST['action']) {
 		if ($host === $_SESSION['current_user']) {
 			$game_list[$host]['started'] = true;
 			# note: hardcoded
-			$game_list[$host]['game'] = new Game( array ( 'tfleming' => array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 4) )
-																				, 'color' => '#FF0000' )
-														, 'sploadie' => array ( 'ships' => array ( new Scout(146, 98), new Scout(146, 96) )
-																				, 'color' => '#00FF00' ) ) );
+			$gameArgs = array();
+			foreach ( $game_list[$host]['players'] as $key => $player ) {
+				switch ($key) {
+					case 0:
+						$gameArgs[$player] = array ( 'ships' => array ( new Scout(1, 1), new Scout(1, 3) )
+													, 'color' => '#FF0000' );
+						break;
+					case 1:
+						$gameArgs[$player] = array ( 'ships' => array ( new Scout(146, 98), new Scout(146, 96) )
+													, 'color' => '#00FF00' );
+						break;
+					case 2:
+						$gameArgs[$player] = array ( 'ships' => array ( new Scout(1, 98), new Scout(1, 96) )
+													, 'color' => '#0000FF' );
+						break;
+					case 3:
+						$gameArgs[$player] = array ( 'ships' => array ( new Scout(146, 1), new Scout(146, 3) )
+													, 'color' => '#00FFFF' );
+						break;
+					default:
+						error_log('whoops');
+						break;
+				}
+				
+			}
+			$game_list[$host]['game'] = new Game( $gameArgs );
 			file_put_contents("../private/lobby", serialize($game_list));
 			exit_to("/game");
 		}
