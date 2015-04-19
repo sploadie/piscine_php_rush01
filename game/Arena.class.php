@@ -60,9 +60,9 @@ EOT;
 		$bodyHeight = $this->_width * $this->_tileSize + 200;
 		return "padding: 50px 50px 50px 50px; width: " . $bodyWidth . "px; height: " . $bodyHeight . "px;";
 	}
-/*
+
 	public function getWidth()		{ return $this->_width;		}
-	public function getHeight()		{ return $this->_height;	}*/
+	public function getHeight()		{ return $this->_height;	}
 	public function getTileSize()	{ return $this->_tileSize;	}
 }
 

@@ -9,6 +9,10 @@ class Obstacle extends Battleship {
 									, 'height' => $height
 									, 'width' => $width
 									, 'maxHealth' => 10000
+									, 'defaultSpeed' => 10
+									, 'defaultShield' => 2
+									, 'damage' => 1
+									, 'defaultAmmo' => 10
 									, 'sprite' => 'obstacle.gif' ) );
 	}
 }

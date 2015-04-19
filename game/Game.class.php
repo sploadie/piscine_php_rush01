@@ -22,6 +22,7 @@ class Game {
 		$this->_currentPlayer = 0;
 		$this->_selectedShipId = -1;
 
+		# note: 'obstacles' is not in $this->_players
 		$this->_ships['obstacles'] = array ( new Obstacle(20, 20, 10, 10)
 											, new Obstacle(119, 69, 10, 10)
 											, new Obstacle(119, 20, 10, 10)
@@ -29,10 +30,70 @@ class Game {
 											, new Obstacle(60, 35, 30, 30) );
 	}
 
+	private function killShip($currentUsername) {
+		# to put back if we do caching of all ship coordinates
+		# $this->_ships[$currentUsername][$this->_selectedShipId]->die();
+		unset($this->_ships[$currentUsername][$this->_selectedShipId]);
+		$this->_selectedShipId = -1;
+	}
+
 	public function moveShip($currentUsername, $deltaX, $deltaY) {
+
+		function doCoordinatesIntersect($firstCoordinates, $secondCoordinates) {
+			foreach ($firstCoordinates as $first) {
+				foreach ($secondCoordinates as $second) {
+					if ($first['x'] === $second['x']
+						&& $first['y'] === $second['y']) {
+						return true;
+					}
+				}
+			}
+			return false;
+		}
+
+		function didCollisionOccur($ship, $thisShips
+									, $thisSelectedShipId, $currentUsername) {
+			$shipCoordinates = $ship->getShipCoordinates();
+			foreach ( $thisShips as $username => $ships ) {
+				foreach ( $ships as $shipId => $otherShip ) {
+					# skip the current ship
+					if ( ! ($username === $currentUsername
+							&& $shipId == $thisSelectedShipId ) ) {
+						$otherShipCoordinates = $otherShip->getShipCoordinates();
+						if (doCoordinatesIntersect($otherShipCoordinates
+													, $shipCoordinates)) {
+							return true;
+						}
+					}
+				}
+			}
+			return false;
+		}
+
+		function isInBounds($ship, $arena) {
+			$shipCoordinates = $ship->getShipCoordinates();
+			$arenaWidth = $arena->getWidth();
+			$arenaHeight = $arena->getHeight();
+			foreach ( $shipCoordinates as $coordinate ) {
+				if ( $coordinate['x'] >= $arenaWidth
+					|| $coordinate['y'] >= $arenaHeight
+					|| $coordinate['x'] < 0
+					|| $coordinate['y'] < 0 ) {
+					return false;
+				}
+			}
+			return true;
+		}
+
 		if ( isset( $this->_ships[$currentUsername][$this->_selectedShipId] ) ) {
 			$ship = $this->_ships[$currentUsername][$this->_selectedShipId];
 			$ship->move($deltaX, $deltaY);
+			if ( didCollisionOccur($ship, $this->_ships, $this->_selectedShipId
+									, $currentUsername)
+					|| !isInBounds($ship, $this->_arena) ) {
+				$this->killShip($currentUsername);
+				error_log('The ship that moved ran into something. How sad.');
+			}
 		} else {
 			error_log('cannot move that ship: it does not exist');
 		}
@@ -50,34 +111,40 @@ class Game {
 	public function shipsToHTML($currentUsername) {
 		$tileSize = $this->_arena->getTileSize();
 
-		foreach ($this->_ships as $username => $ships) {
-			foreach ($ships as $key => $ship) {
+		# I don't like how broken up this HTML got
+		# , but it was really long and annoyed me a lot
+		# /poetry
+
+		foreach ( $this->_ships as $username => $ships ) {
+			foreach ( $ships as $shipId => $ship ) {
 				$img_width = $ship['width'] * $tileSize;
 				$img_height = $ship['height'] * $tileSize;
 				$img_url = urlPath('img/' . $ship['sprite']);
 				#$transform = ($ship['flipped'] ? "transform:scale(-1,1);" : "");
+				
+				$title = "title='action.php?action=shipClicked&username=$username&shipId=$shipId'";
 				$srcWidthHeight = "src=\"$img_url\" width=\"$img_width\" height=\"$img_height\"";
-				$heightWidth = "width: $img_width; height: $img_height;";
-
-				$img_x_pos = ($tileSize * $ship['x']);
-				$img_y_pos = ($tileSize * $ship['y']);
-				$imageStuff = "left: $img_x_pos; top: $img_y_pos; position: absolute;";#" $transform";
-
-				$title = "title='action.php?action=shipClicked&username=$username&shipId=$key'";
 
 				if ( $currentUsername === $this->getCurrentPlayer()
 						&& $username === $currentUsername
-						&& $this->_selectedShipId == $key ) {
+						&& $this->_selectedShipId == $shipId ) {
 					$shadowColor = '#FFFFFF';
 				} else if ($username === 'obstacles') {
 					$shadowColor = 'rgba(0, 0, 0, 0)';
 				} else {
 					$shadowColor = $this->_colors[$username];
 				}
-				
+
+				# style stuff
+				$heightWidth = "width: $img_width; height: $img_height;";
+				$img_x_pos = ($tileSize * $ship['x']);
+				$img_y_pos = ($tileSize * $ship['y']);
+				$imageStuff = "left: $img_x_pos; top: $img_y_pos; position: absolute;";#" $transform";
 				$background = "box-shadow: 0px 0px 10px 5px $shadowColor;";
+				$style = "$heightWidth $imageStuff $background";
+
 				echo <<<EOT
-				<img class="battleship game-button" $title $srcWidthHeight style="$heightWidth $imageStuff $background" />
+				<img class="battleship game-button" $title $srcWidthHeight style="$style" />
 EOT;
 			}
 		}
@@ -86,15 +153,15 @@ EOT;
 	public function printUserInterface($currentUsername) {
 		# note: arrays can only have one of each key, meaming you can't have two blanks on the same line
 
-		$moveTheShip = array(
+		$selectingShip = array(
 			'buttons' => array(
 				array("hidden1" => 'asdf',			"triangle-1-n" => 'moveUp',		"hidden2" => 'asdf',			"hidden3" => 'asdf',	"check" => 'nextPlayer'),
 				array("triangle-1-w" => 'moveLeft',	"triangle-1-s" => 'moveDown',	"triangle-1-e" => 'moveRight',	"hidden1" => 'asdf',	"hidden2" => 'asdf')),
 			'message' => "Move your ship!",
-			'content' => ""
+			'content' => "SHIP STATS INSERTED HERE"
 		);
 
-		$selectAShip = array(
+		$noShipSelected = array(
 			'buttons' => array(
 				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"check" => 'nextPlayer'),
 				array("hidden1" => 'asdf',	"hidden2" => 'asdf',	"hidden3" => 'asdf',	"hidden4" => 'asdf',	"hidden5" => 'asdf')),
@@ -111,9 +178,12 @@ EOT;
 		if ( $currentUsername === $this->getCurrentPlayer() ) {
 			# it's your turn!
 			if ($this->_selectedShipId >= 0) {
-				$currentSettings = $moveTheShip;
+				$ship = $this->_ships[$currentUsername][$this->_selectedShipId];
+				$shipStats = "Health: " . $ship['health'];
+				$selectingShip['content'] = $shipStats;
+				$currentSettings = $selectingShip;
 			} else {
-				$currentSettings = $selectAShip;
+				$currentSettings = $noShipSelected;
 			}
 		} else {
 			# not your turn
@@ -125,14 +195,13 @@ EOT;
 
 	// SIMPLE FUNCTIONS ====================================================>>>
 
-	public function arenaToHTML() {		$this->_arena->toHTML();				}
-	public function bodyStyle() {		return $this->_arena->bodyStyle();		}
-
 	public function setSelectedShipId($id) {
 		$this->_selectedShipId = $id;
 	}
 
-	public function getCurrentPlayer() {	return $this->_players[$this->_currentPlayer];	}
+	public function arenaToHTML() {			$this->_arena->toHTML();										}
+	public function bodyStyle() {			return $this->_arena->bodyStyle();								}
+	public function getCurrentPlayer() {	return $this->_players[$this->_currentPlayer];					}
 
 	// STATIC FUNCTIONS ====================================================>>>
 
